@@ -6,7 +6,7 @@ use axum::{
     routing::{get, post},
     Form, Router,
 };
-use axum_messages::{Message, Messages};
+use axum_messages::Message;
 use serde::Deserialize;
 
 use crate::users::{AuthSession, Credentials};
@@ -37,13 +37,14 @@ mod post {
 
     pub async fn login(
         auth_session: AuthSession,
-        messages: Messages,
+        //messages: Messages,
         Form(creds): Form<Credentials>,
     ) -> impl IntoResponse {
+        println!("LOGIN");
         let user = match auth_session.authenticate(creds.clone()).await {
             Ok(Some(user)) => user,
             Ok(None) => {
-                messages.error("Invalid credentials");
+                //messages.error("Invalid credentials");
 
                 let mut login_url = "/login".to_string();
                 if let Some(next) = creds.next {
@@ -59,7 +60,7 @@ mod post {
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
         }
 
-        messages.success(format!("Successfully logged in as {}", user.username));
+        //messages.success(format!("Successfully logged in as {}", user.username));
 
         if let Some(ref next) = creds.next {
             Redirect::to(next)
@@ -74,12 +75,12 @@ mod get {
     use super::*;
 
     pub async fn login(
-        messages: Messages,
+        //messages: Messages,
         Query(NextUrl { next }): Query<NextUrl>,
     ) -> Html<String> {
         Html(
             LoginTemplate {
-                messages: messages.into_iter().collect(),
+                messages: vec![],
                 next,
             }
             .render()

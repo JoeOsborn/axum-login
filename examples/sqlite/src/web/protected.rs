@@ -5,7 +5,7 @@ use axum::{
     routing::get,
     Router,
 };
-use axum_messages::{Message, Messages};
+use axum_messages::Message;
 
 use crate::users::AuthSession;
 
@@ -23,11 +23,12 @@ pub fn router() -> Router<()> {
 mod get {
     use super::*;
 
-    pub async fn protected(auth_session: AuthSession, messages: Messages) -> impl IntoResponse {
+    pub async fn protected(auth_session: AuthSession) -> impl IntoResponse {
+        println!("prot path");
         match auth_session.user().await {
             Some(user) => Html(
                 ProtectedTemplate {
-                    messages: messages.into_iter().collect(),
+                    messages: vec![],
                     username: &user.username,
                 }
                 .render()
