@@ -595,7 +595,7 @@ mod tests {
             res.headers()
                 .get(header::LOCATION)
                 .and_then(|h| h.to_str().ok()),
-            Some("/login?next=%2F&foo=bar&foo=baz")
+            Some("/login?foo=bar&foo=baz&next=%2F")
         );
 
         let req = Request::builder()
@@ -608,7 +608,7 @@ mod tests {
             res.headers()
                 .get(header::LOCATION)
                 .and_then(|h| h.to_str().ok()),
-            Some("/login?next=%2F%3Fa%3Db%26a%3Dc&foo=bar&foo=baz")
+            Some("/login?foo=bar&foo=baz&next=%2F%3Fa%3Db%26a%3Dc")
         );
     }
 
